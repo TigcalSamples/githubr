@@ -7,4 +7,6 @@
     <string name="user_description">Description: %s</string>
     <string name="user_followers">Followers:\n%s</string>
     <string name="user_following">Following:\n%s</string>
+
+    <string name="menu_search">Search</string>
 </resources>
