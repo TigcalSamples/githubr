@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="layout_margin">16dp</dimen>
+
+    <dimen name="photo_size">160dp</dimen>
+</resources>
