@@ -2,15 +2,65 @@ package com.tigcal.samples.githubr
 
 import android.app.SearchManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.Group
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
+import com.tigcal.samples.githubr.data.GitHubRepository
+import com.tigcal.samples.githubr.data.User
+import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
+    private val progressBar: ProgressBar by lazy { findViewById(R.id.progress_bar) }
+    private val imageView: ImageView by lazy { findViewById(R.id.avatar) }
+    private val userNameText: TextView by lazy { findViewById(R.id.user_name_text) }
+    private val nameText: TextView by lazy { findViewById(R.id.name_text) }
+    private val descriptionText: TextView by lazy { findViewById(R.id.description_text) }
+    private val followersText: TextView by lazy { findViewById(R.id.followers_text) }
+    private val followingText: TextView by lazy { findViewById(R.id.following_text) }
+    private val userGroup: Group by lazy { findViewById(R.id.user_group) }
+    private val errorText: TextView by lazy { findViewById(R.id.error_text) }
+
+    private lateinit var repository: GitHubRepository
+    private lateinit var viewModel: GitHubViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        repository = (application as GitHubrApp).gitHubRepository
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return GitHubViewModel(repository) as T
+            }
+        })[GitHubViewModel::class.java]
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.user.collect {
+                        showUser(it)
+                    }
+                }
+                launch {
+                    viewModel.error.collect { message ->
+                        if (message.isNotEmpty()) {
+                            showErrorScreen()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -36,6 +86,38 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun searchUser(username: String) {
-        Log.d("search", "searching for $username")
+        progressBar.isVisible = true
+        errorText.isVisible = false
+        userGroup.isVisible = false
+
+        viewModel.searchUser(username)
+    }
+
+    private fun showUser(user: User?) {
+        user ?: return
+
+        progressBar.isVisible = false
+        errorText.isVisible = false
+        userGroup.isVisible = true
+
+        with(user) {
+            Glide.with(this@ProfileActivity)
+                .load(user.avatar)
+                .placeholder(R.mipmap.ic_launcher)
+                .fitCenter()
+                .into(imageView)
+
+            nameText.text = getString(R.string.user_name, name)
+            userNameText.text = getString(R.string.user_user_name, username)
+            descriptionText.text = getString(R.string.user_description, description)
+            followersText.text = getString(R.string.user_followers, followers.toString())
+            followingText.text = getString(R.string.user_following, following.toString())
+        }
+    }
+
+    private fun showErrorScreen() {
+        progressBar.isVisible = false
+        errorText.isVisible = true
+        userGroup.isVisible = false
     }
 }

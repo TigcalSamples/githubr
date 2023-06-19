@@ -28,7 +28,9 @@ class GitHubViewModel(
     private val _error = MutableStateFlow("")
     val error: StateFlow<String> = _error
 
-    private fun searchUser(username: String) {
+    fun searchUser(username: String) {
+        _error.value = ""
+
         viewModelScope.launch {
             try {
                 val result = gitHubRepository.searchUser(username).first()
@@ -36,7 +38,7 @@ class GitHubViewModel(
                     _user.value = it
                 }
             } catch (exception: Exception) {
-                _error.value = "User Not found"
+                _error.value = "User Not Found"
             }
         }
     }

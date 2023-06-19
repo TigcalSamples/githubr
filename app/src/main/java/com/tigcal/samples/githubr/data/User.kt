@@ -3,7 +3,7 @@ package com.tigcal.samples.githubr.data
 import com.squareup.moshi.Json
 
 data class User(
-    val id: String = "",
+    val id: Long = 0,
     @field:Json(name = "login")
     val username: String = "",
     @field:Json(name = "avatar_url")
@@ -16,5 +16,7 @@ data class User(
 )
 
 data class UserSearchResponse(
+    val total_count: Int,
+    val incomplete_results: Boolean,
     val items: List<User>
 )
