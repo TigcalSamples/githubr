@@ -51,6 +51,9 @@ class ProfileActivity : AppCompatActivity() {
             }
         })[GitHubViewModel::class.java]
 
+        val userName = intent.getStringExtra(FollowActivity.EXTRA_USER) ?: "jomartigcal"
+        searchUser(userName)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -106,12 +109,12 @@ class ProfileActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun searchUser(username: String) {
+    private fun searchUser(userName: String) {
         progressBar.isVisible = true
         errorText.isVisible = false
         userGroup.isVisible = false
 
-        viewModel.searchUser(username)
+        viewModel.searchUser(userName)
     }
 
     private fun showUser(user: User?) {
