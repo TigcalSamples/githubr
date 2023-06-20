@@ -10,4 +10,9 @@
     <string name="user_not_found">User Not Found</string>
 
     <string name="menu_search">Search</string>
+
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+
+    <string name="title_activity_follow">FollowActivity</string>
 </resources>

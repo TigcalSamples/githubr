@@ -1,6 +1,7 @@
 package com.tigcal.samples.githubr
 
 import android.app.SearchManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.ImageView
@@ -61,6 +62,13 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         }
+
+        followersText.setOnClickListener {
+            openFollowPage(userNameText.tag.toString(), getString(R.string.followers))
+        }
+        followingText.setOnClickListener {
+            openFollowPage(userNameText.tag.toString(), getString(R.string.following))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -109,6 +117,7 @@ class ProfileActivity : AppCompatActivity() {
 
             nameText.text = getString(R.string.user_name, name)
             userNameText.text = getString(R.string.user_user_name, username)
+            userNameText.tag = username
             descriptionText.text = getString(R.string.user_description, description)
             followersText.text = getString(R.string.user_followers, followers.toString())
             followingText.text = getString(R.string.user_following, following.toString())
@@ -119,5 +128,12 @@ class ProfileActivity : AppCompatActivity() {
         progressBar.isVisible = false
         errorText.isVisible = true
         userGroup.isVisible = false
+    }
+
+    private fun openFollowPage(username: String, followLabel: String) {
+        val intent = Intent(this, FollowActivity::class.java)
+        intent.putExtra(FollowActivity.EXTRA_FOLLOW, followLabel)
+        intent.putExtra(FollowActivity.EXTRA_USER, username)
+        startActivity(intent)
     }
 }
