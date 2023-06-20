@@ -1,6 +1,7 @@
 package com.tigcal.samples.githubr
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.tigcal.samples.githubr.data.User
 import com.tigcal.samples.githubr.ui.FollowList
 import com.tigcal.samples.githubr.ui.theme.GithubrTheme
 
@@ -31,10 +33,15 @@ class FollowActivity : ComponentActivity() {
         val label = intent.getStringExtra(EXTRA_FOLLOW) ?: ""
         val userName = intent.getStringExtra(EXTRA_USER) ?: ""
         val isFollower = label == getString(R.string.followers)
+        val clickAction = { user: User ->
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra(EXTRA_USER, user.username)
+            startActivity(intent)
+        }
 
         setContent {
             GithubrTheme {
-                FollowScreen(label, userName, isFollower)
+                FollowScreen(label, userName, isFollower, clickAction)
             }
         }
     }
@@ -52,6 +59,7 @@ fun FollowScreen(
     label: String,
     userName: String,
     isFollower: Boolean,
+    clickAction: (User) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -86,6 +94,7 @@ fun FollowScreen(
                         return GitHubViewModel(repository) as T
                     }
                 }),
+                clickAction = clickAction
             )
         }
     }
@@ -95,6 +104,6 @@ fun FollowScreen(
 @Composable
 fun FollowScreenPreview() {
     GithubrTheme {
-        FollowScreen(label = "Label", userName = "user", isFollower = false)
+        FollowScreen(label = "Label", userName = "user", isFollower = false, clickAction = {})
     }
 }

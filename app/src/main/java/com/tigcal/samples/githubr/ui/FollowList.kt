@@ -1,5 +1,6 @@
 package com.tigcal.samples.githubr.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.tigcal.samples.githubr.GitHubViewModel
 import com.tigcal.samples.githubr.R
+import com.tigcal.samples.githubr.data.User
 import com.tigcal.samples.githubr.ui.theme.GithubrTheme
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -34,6 +36,7 @@ fun FollowList(
     userName: String,
     isFollower: Boolean,
     viewModel: GitHubViewModel,
+    clickAction: (User) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     viewModel.getFollowersOrFollowing(userName, isFollower)
@@ -51,6 +54,7 @@ fun FollowList(
             items(users) { user ->
                 Row(
                     modifier = Modifier.padding(8.dp)
+                        .clickable { clickAction(user) }
                 ) {
                     AsyncImage(
                         model = user.avatar,
