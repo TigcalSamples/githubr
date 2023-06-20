@@ -33,12 +33,12 @@ class GitHubViewModel(
 
         viewModelScope.launch(dispatcher) {
             try {
-                val result = gitHubRepository.searchUser(username).first()
+                gitHubRepository.searchUser(username).first()
                 gitHubRepository.getProfile(username).collect {
                     _user.value = it
                 }
             } catch (exception: Exception) {
-                _error.value = "User Not Found"
+                _error.value = exception.message.toString()
             }
         }
     }

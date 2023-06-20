@@ -1,18 +1,14 @@
-package com.tigcal.samples.githubr
+package com.tigcal.samples.githubr.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
-import com.tigcal.samples.githubr.data.GitHubRepository
-import com.tigcal.samples.githubr.data.GitHubService
-import com.tigcal.samples.githubr.data.User
-import com.tigcal.samples.githubr.data.UserSearchResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
@@ -21,24 +17,24 @@ import java.lang.RuntimeException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
-class GithubrRepositoryTest {
+class GithubRepositoryTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Test
     fun searchUsers() {
-        val users = listOf(User(id="1"), User(id="2"))
-        val response = UserSearchResponse(users)
+        val users = listOf(User(id = 1L), User(id = 2L))
+        val response = UserSearchResponse(items = users)
 
         val gitHubService: GitHubService = mock {
-            onBlocking { searchUser(anyString()) } doReturn response
+            onBlocking { searchUser(ArgumentMatchers.anyString()) } doReturn response
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.searchUser("he").test {
-                assertEquals(users, awaitItem())
+                Assert.assertEquals(users, awaitItem())
                 awaitComplete()
             }
         }
@@ -49,14 +45,16 @@ class GithubrRepositoryTest {
         val exception = "Test Exception"
 
         val gitHubService: GitHubService = mock {
-            onBlocking { searchUser(anyString()) } doThrow  RuntimeException(exception)
+            onBlocking { searchUser(ArgumentMatchers.anyString()) } doThrow RuntimeException(
+                exception
+            )
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.searchUser("him").test {
-                assertEquals(exception, awaitError().message)
+                Assert.assertEquals(exception, awaitError().message)
             }
         }
     }
@@ -66,14 +64,14 @@ class GithubrRepositoryTest {
         val user = User(username = "she", name = "Her")
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getProfile(anyString()) } doReturn user
+            onBlocking { getProfile(ArgumentMatchers.anyString()) } doReturn user
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getProfile("me").test {
-                assertEquals(user, awaitItem())
+                Assert.assertEquals(user, awaitItem())
                 awaitComplete()
             }
         }
@@ -84,31 +82,33 @@ class GithubrRepositoryTest {
         val exception = "Test Exception"
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getProfile(anyString()) } doThrow  RuntimeException(exception)
+            onBlocking { getProfile(ArgumentMatchers.anyString()) } doThrow RuntimeException(
+                exception
+            )
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getProfile("you").test {
-                assertEquals(exception, awaitError().message)
+                Assert.assertEquals(exception, awaitError().message)
             }
         }
     }
 
     @Test
     fun getFollowers() {
-        val followers = listOf(User(id="3"), User(id="4"))
+        val followers = listOf(User(id = 3L), User(id = 4L))
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getFollowers(anyString()) } doReturn followers
+            onBlocking { getFollowers(ArgumentMatchers.anyString()) } doReturn followers
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getFollowers("he").test {
-                assertEquals(followers, awaitItem())
+                Assert.assertEquals(followers, awaitItem())
                 awaitComplete()
             }
         }
@@ -119,31 +119,33 @@ class GithubrRepositoryTest {
         val exception = "Test Exception"
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getFollowers(anyString()) } doThrow  RuntimeException(exception)
+            onBlocking { getFollowers(ArgumentMatchers.anyString()) } doThrow RuntimeException(
+                exception
+            )
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getFollowers("she").test {
-                assertEquals(exception, awaitError().message)
+                Assert.assertEquals(exception, awaitError().message)
             }
         }
     }
 
     @Test
     fun getFollowing() {
-        val followers = listOf(User(id="3"), User(id="4"))
+        val followers = listOf(User(id = 5L), User(id = 6L))
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getFollowing(anyString()) } doReturn followers
+            onBlocking { getFollowing(ArgumentMatchers.anyString()) } doReturn followers
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getFollowing("they").test {
-                assertEquals(followers, awaitItem())
+                Assert.assertEquals(followers, awaitItem())
                 awaitComplete()
             }
         }
@@ -154,14 +156,16 @@ class GithubrRepositoryTest {
         val exception = "Test Exception"
 
         val gitHubService: GitHubService = mock {
-            onBlocking { getFollowing(anyString()) } doThrow  RuntimeException(exception)
+            onBlocking { getFollowing(ArgumentMatchers.anyString()) } doThrow RuntimeException(
+                exception
+            )
         }
 
         val gitHubRepository = GitHubRepository(gitHubService)
 
         runTest {
             gitHubRepository.getFollowing("them").test {
-                assertEquals(exception, awaitError().message)
+                Assert.assertEquals(exception, awaitError().message)
             }
         }
     }

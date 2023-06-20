@@ -16,7 +16,7 @@ data class User(
 )
 
 data class UserSearchResponse(
-    val total_count: Int,
-    val incomplete_results: Boolean,
-    val items: List<User>
+    val total_count: Int = 0,
+    val incomplete_results: Boolean = false,
+    val items: List<User> = emptyList()
 )
