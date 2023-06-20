@@ -8,7 +8,7 @@ data class User(
     val username: String = "",
     @field:Json(name = "avatar_url")
     val avatar: String = "",
-    val name: String = "",
+    val name: String? = "",
     @field:Json(name = "bio")
     val description: String? = "",
     val followers: Int = 0,

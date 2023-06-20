@@ -3,10 +3,12 @@ package com.tigcal.samples.githubr
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.Menu
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.Group
@@ -115,16 +117,21 @@ class ProfileActivity : AppCompatActivity() {
                 .fitCenter()
                 .into(imageView)
 
-            nameText.text = getString(R.string.user_name, name)
-            userNameText.text = getString(R.string.user_user_name, username)
+            nameText.text = formatText(R.string.user_name,
+                name ?: getString(R.string.user_name_empty)
+            )
+            userNameText.text = formatText(R.string.user_user_name,username)
             userNameText.tag = username
-            descriptionText.text = getString(R.string.user_description,
+            descriptionText.text = formatText(R.string.user_description,
                 description ?: getString(R.string.user_description_empty)
             )
-            followersText.text = getString(R.string.user_followers, followers.toString())
-            followingText.text = getString(R.string.user_following, following.toString())
+            followersText.text = formatText(R.string.user_followers, followers.toString())
+            followingText.text = formatText(R.string.user_following, following.toString())
         }
     }
+
+    private fun formatText(@StringRes stringId: Int, value: String) =
+        Html.fromHtml(getString(stringId,value), Html.FROM_HTML_MODE_COMPACT)
 
     private fun showErrorScreen() {
         progressBar.isVisible = false

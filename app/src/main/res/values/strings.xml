@@ -2,12 +2,13 @@
     <string name="app_name">GitHubr</string>
 
     <string name="user_avatar">Avatar</string>
-    <string name="user_user_name">Username: %s</string>
-    <string name="user_name">Name: %s</string>
-    <string name="user_description">Description: %s</string>
+    <string name="user_user_name">&lt;b&gt;Username:&lt;/b&gt; %s</string>
+    <string name="user_name">&lt;b&gt;Name:&lt;/b&gt; %s</string>
+    <string name="user_name_empty">(No Name Provided)</string>
+    <string name="user_description">&lt;b&gt;Description:&lt;/b&gt; %s</string>
     <string name="user_description_empty">(No Description Provided)</string>
-    <string name="user_followers">Followers:\n%s</string>
-    <string name="user_following">Following:\n%s</string>
+    <string name="user_followers">&lt;b&gt;Followers:&lt;/b&gt;&lt;br&gt;%s</string>
+    <string name="user_following">&lt;b&gt;Following:&lt;/b&gt;&lt;br&gt;%s</string>
     <string name="user_not_found">User Not Found</string>
 
     <string name="menu_search">Search</string>
