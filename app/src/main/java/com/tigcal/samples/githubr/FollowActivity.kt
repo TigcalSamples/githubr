@@ -1,29 +1,40 @@
 package com.tigcal.samples.githubr
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.tigcal.samples.githubr.ui.FollowList
 import com.tigcal.samples.githubr.ui.theme.GithubrTheme
 
 class FollowActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val label = intent.getStringExtra(EXTRA_FOLLOW) ?: ""
+        val userName = intent.getStringExtra(EXTRA_USER) ?: ""
+        val isFollower = label == getString(R.string.followers)
+
         setContent {
             GithubrTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting2("Android")
-                }
+                FollowScreen(label, userName, isFollower)
             }
         }
     }
@@ -34,18 +45,56 @@ class FollowActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Greeting2(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun FollowScreen(
+    label: String,
+    userName: String,
+    isFollower: Boolean,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = label,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                },
+                colors = topAppBarColors(MaterialTheme.colorScheme.primary)
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = 64.dp,
+                    start = 8.dp,
+                    end = 8.dp,
+                    bottom = 16.dp
+                )
+        ) {
+            val repository =
+                (LocalContext.current.applicationContext as GitHubrApp).gitHubRepository
+            FollowList(
+                userName = userName,
+                isFollower = isFollower,
+                viewModel = viewModel(factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return GitHubViewModel(repository) as T
+                    }
+                }),
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview2() {
+fun FollowScreenPreview() {
     GithubrTheme {
-        Greeting2("Android")
+        FollowScreen(label = "Label", userName = "user", isFollower = false)
     }
 }

@@ -19,11 +19,11 @@ class GitHubViewModel(
     private val _user: MutableStateFlow<User?> = MutableStateFlow(null)
     val user: StateFlow<User?> = _user
 
-    private val _followers = MutableStateFlow(emptyList<User>())
-    val followers: StateFlow<List<User>> = _followers
+    private val _followList = MutableStateFlow(emptyList<User>())
+    val followList: StateFlow<List<User>> = _followList
 
-    private val _following = MutableStateFlow(emptyList<User>())
-    val following: StateFlow<List<User>> = _following
+    private val _refreshing = MutableStateFlow(false)
+    val refreshing: StateFlow<Boolean> = _refreshing
 
     private val _error = MutableStateFlow("")
     val error: StateFlow<String> = _error
@@ -31,7 +31,7 @@ class GitHubViewModel(
     fun searchUser(username: String) {
         _error.value = ""
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             try {
                 val result = gitHubRepository.searchUser(username).first()
                 gitHubRepository.getProfile(username).collect {
@@ -43,22 +43,32 @@ class GitHubViewModel(
         }
     }
 
+    fun getFollowersOrFollowing(userName: String, isFollower: Boolean) {
+        if (isFollower) {
+            getFollowers(userName)
+        } else {
+            getFollowing(userName)
+        }
+    }
+
     private fun getFollowers(username: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             gitHubRepository.getFollowers(username).catch {
-                    _error.value = "No followers to display"
-                }.collect {
-                    _followers.value = it
-                }
+                _error.value = "No followers to display"
+            }.collect {
+                _followList.value = it
+                _refreshing.value = false
+            }
         }
     }
 
     private fun getFollowing(username: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             gitHubRepository.getFollowing(username).catch {
                 _error.value = "User is not following anyone"
             }.collect {
-                _following.value = it
+                _followList.value = it
+                _refreshing.value = false
             }
         }
     }
