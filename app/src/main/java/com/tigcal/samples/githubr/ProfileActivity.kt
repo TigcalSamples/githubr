@@ -118,7 +118,9 @@ class ProfileActivity : AppCompatActivity() {
             nameText.text = getString(R.string.user_name, name)
             userNameText.text = getString(R.string.user_user_name, username)
             userNameText.tag = username
-            descriptionText.text = getString(R.string.user_description, description)
+            descriptionText.text = getString(R.string.user_description,
+                description ?: getString(R.string.user_description_empty)
+            )
             followersText.text = getString(R.string.user_followers, followers.toString())
             followingText.text = getString(R.string.user_following, following.toString())
         }

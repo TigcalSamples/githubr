@@ -10,7 +10,7 @@ data class User(
     val avatar: String = "",
     val name: String = "",
     @field:Json(name = "bio")
-    val description: String = "",
+    val description: String? = "",
     val followers: Int = 0,
     val following: Int = 0,
 )
