@@ -66,7 +66,7 @@ fun FollowScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = label,
+                        text = "$userName : $label",
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 },

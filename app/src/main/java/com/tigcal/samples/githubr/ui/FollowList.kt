@@ -53,7 +53,8 @@ fun FollowList(
         LazyColumn {
             items(users) { user ->
                 Row(
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(8.dp)
                         .clickable { clickAction(user) }
                 ) {
                     AsyncImage(
