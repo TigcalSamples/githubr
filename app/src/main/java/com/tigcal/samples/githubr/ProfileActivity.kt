@@ -19,9 +19,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.tigcal.samples.githubr.data.GitHubRepository
 import com.tigcal.samples.githubr.data.User
 import kotlinx.coroutines.launch
+
+private const val ZERO = 0
 
 class ProfileActivity : AppCompatActivity() {
     private val progressBar: ProgressBar by lazy { findViewById(R.id.progress_bar) }
@@ -66,10 +69,18 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         followersText.setOnClickListener {
-            openFollowPage(userNameText.tag.toString(), getString(R.string.followers))
+            if ((followersText.tag.toString().toIntOrNull() ?: ZERO) == ZERO) {
+                displayErrorMessage(getString(R.string.followers_empty))
+            } else {
+                openFollowPage(userNameText.tag.toString(), getString(R.string.followers))
+            }
         }
         followingText.setOnClickListener {
-            openFollowPage(userNameText.tag.toString(), getString(R.string.following))
+            if ((followingText.tag.toString().toIntOrNull() ?: ZERO) == ZERO) {
+                displayErrorMessage(getString(R.string.following_empty))
+            } else {
+                openFollowPage(userNameText.tag.toString(), getString(R.string.following))
+            }
         }
     }
 
@@ -126,7 +137,9 @@ class ProfileActivity : AppCompatActivity() {
                 description ?: getString(R.string.user_description_empty)
             )
             followersText.text = formatText(R.string.user_followers, followers.toString())
+            followersText.tag = followers.toString()
             followingText.text = formatText(R.string.user_following, following.toString())
+            followingText.tag = following.toString()
         }
     }
 
@@ -137,6 +150,10 @@ class ProfileActivity : AppCompatActivity() {
         progressBar.isVisible = false
         errorText.isVisible = true
         userGroup.isVisible = false
+    }
+
+    private fun displayErrorMessage(message: String) {
+       Snackbar.make(descriptionText, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun openFollowPage(username: String, followLabel: String) {

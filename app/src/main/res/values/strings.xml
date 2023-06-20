@@ -14,7 +14,9 @@
     <string name="menu_search">Search</string>
 
     <string name="followers">Followers</string>
+    <string name="followers_empty">User has no followers</string>
     <string name="following">Following</string>
+    <string name="following_empty">User is not following anyone</string>
 
     <string name="title_activity_follow">FollowActivity</string>
 </resources>
